@@ -1,0 +1,16 @@
+<!-- mai trebuie si action -->
+        <form method="post"> 
+        <% for(let i = 0; i < intrebari.length; ++i){ c = 0; %>
+
+            <p><%= intrebari[i].intrebare %></p>
+            <% 
+            for(let v of intrebari[i].variante){ 
+            %>
+            <input type="radio" name="q<%=i%>" value="<%=c++%>"/>
+            <label><%=v%></label><br/>
+            <%
+            }
+        }
+        %>
+        </form>
+    
