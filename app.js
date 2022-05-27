@@ -42,8 +42,14 @@ app.get('/autentificare', (req, res) => {
   res.render('autentificare.ejs');
 });
 
+app.post('/verificare-autentificare', (req, res) => {
+  console.log(req.body);
+  res.render('');
+});
+
 // logica pentru rezultatul chestionarului
 app.post('/rezultat-chestionar', (req, res) => {
+  console.log(req.body);
   var responses = req.body;
   var correctAnswers = 0;
 
