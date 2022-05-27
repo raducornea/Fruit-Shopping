@@ -24,7 +24,8 @@ app.use(cookieParser());
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => {
-  res.render('index.ejs');
+  console.log(req.cookies.utilizator);
+  res.render('index.ejs', {cookie_name: req.cookies.utilizator});
 });
 
 // modul pentru filesystem
@@ -71,11 +72,11 @@ app.post('/verificare-autentificare', (req, res) => {
   
   if(found){
     res.cookie("utilizator", currentUserName);
-    res.redirect('');
+    res.redirect('/');
   }
   else{
     res.cookie("mesajEroare", "User not found");
-    res.redirect('/autentificare');
+    res.redirect('autentificare');
   }
 });
 

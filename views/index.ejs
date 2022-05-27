@@ -1,2 +1,5 @@
-<p>Hello World</p>
-<a href="/autentificare">Login</a>
+<% if(cookie_name === undefined) { %>
+    <a href="/autentificare">Login</a>
+<% } else { %>
+    <p>Bine ai revenit, <%=cookie_name%>!</p>
+<% } %>
