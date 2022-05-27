@@ -38,6 +38,10 @@ app.get('/chestionar', (req, res) => {
 	res.render('chestionar', {intrebari: listaIntrebari});
 });
 
+app.get('/autentificare', (req, res) => {
+  res.render('autentificare.ejs');
+});
+
 // logica pentru rezultatul chestionarului
 app.post('/rezultat-chestionar', (req, res) => {
   var responses = req.body;
