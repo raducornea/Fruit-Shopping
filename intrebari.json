@@ -1,0 +1,17 @@
+[
+  {
+    "intrebare": "1. Ce este fructul dragonului?",
+    "variante": ["Un ou de culoare fucsia", "Un deliciu al naturii", "Nu", "Poate"],
+    "corect": 1
+  },
+  {
+    "intrebare": "2. Ce culoare are coaja unui sapote negru?",
+    "variante": ["Negru", "Gri", "Verde", "Rosu"],
+    "corect": 2
+  },
+  {
+    "intrebare": "3. Care fruct are forma de stea?",
+    "variante": ["Carambola", "Kumquat", "Tamarillo", "Sapote"],
+    "corect": 0
+  }
+]

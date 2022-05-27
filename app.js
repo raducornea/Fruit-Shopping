@@ -22,24 +22,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => res.send('Hello World'));
 
-const listaIntrebari = [
-  {
-    intrebare: '1. Ce este fructul dragonului?',
-    variante: ['Un ou de culoare fucsia', 'Un deliciu al naturii', 'Nu', 'Poate'],
-    corect: 1
-  },
-  {
-    intrebare: '2. Ce culoare are coaja unui sapote negru?',
-    variante: ['Negru', 'Gri', 'Verde', 'Rosu'],
-    corect: 2
-  },
-  {
-    intrebare: '3. Care fruct are forma de stea?',
-    variante: ['Carambola', 'Kumquat', 'Tamarillo', 'Sapote'],
-    corect: 0
-  },
-  //...
-];
+// citire fisier json cu intrebarile in mod asincron
+const filesystem = require('fs');
+var listaIntrebari;
+filesystem.readFile('intrebari.json', (error, data) => {
+    if (error) throw error;
+    listaIntrebari = JSON.parse(data);
+});
 
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 app.get('/chestionar', (req, res) => {
@@ -47,7 +36,7 @@ app.get('/chestionar', (req, res) => {
 	res.render('chestionar', {intrebari: listaIntrebari});
 });
 
-// aici trebuie pusa logica pentru rezultatul chestionarului
+// logica pentru rezultatul chestionarului
 app.post('/rezultat-chestionar', (req, res) => {
   var responses = req.body;
   var correctAnswers = 0;
@@ -60,15 +49,16 @@ app.post('/rezultat-chestionar', (req, res) => {
       ++correctAnswers;
   }
 
+  // se redirectioneaza la numarul de raspunsuri corecte
   res.redirect('/rezultat-chestionar?answers=' + correctAnswers);
-  // res.render("rezultat-chestionar", {answers: correctAnswers});
-	// res.send("formular: " + JSON.stringify(req.body)); // { q0: '1', q1: '2', q2: '0' }
 });
 
+// pagina care contine numarul de raspunsuri corecte propriu-zisa
 app.get('/rezultat-chestionar', (req, res) => {
     console.log("Sunt in GET");
     var correctAnswers = req.query.answers;
     res.render('rezultat-chestionar', { numarCorecteDeTrimis: correctAnswers });
 });
 
-app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost:`));
+app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost:${port}`));
+
