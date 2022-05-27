@@ -1,3 +1,4 @@
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser')
@@ -16,6 +17,8 @@ app.use(express.static('public'))
 app.use(bodyParser.json());
 // utilizarea unui algoritm de deep parsing care suportă obiecte în obiecte
 app.use(bodyParser.urlencoded({ extended: true }));
+// pentru cookie-uri
+app.use(cookieParser());
 
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'Hello World'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
@@ -24,12 +27,19 @@ app.get('/', (req, res) => {
   res.render('index.ejs');
 });
 
-// citire fisier json cu intrebarile in mod asincron
-const filesystem = require('fs');
+// modul pentru filesystem
+const fileSystem = require('fs');
+
 var listaIntrebari;
-filesystem.readFile('intrebari.json', (error, data) => {
+fileSystem.readFile('intrebari.json', (error, data) => {
     if (error) throw error;
     listaIntrebari = JSON.parse(data);
+});
+
+var listaUtilizatori;
+fileSystem.readFile('utilizatori.json', (error, data) => {
+    if (error) throw error;
+    listaUtilizatori = JSON.parse(data);
 });
 
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
@@ -44,6 +54,22 @@ app.get('/autentificare', (req, res) => {
 
 app.post('/verificare-autentificare', (req, res) => {
   console.log(req.body);
+
+  currentUserName = req.body["username"];
+  currentUserPassword = req.body["password"];
+
+  var result = "User not found";
+  for (const user of listaUtilizatori){
+    userNameToCompare = user["nume_utilizator"];
+    userPasswordToCompare = user["nume_utilizator"];
+
+    if(userNameToCompare === currentUserName && userPasswordToCompare == currentUserName){
+      result = "Successfully connected!";
+      break;
+    }
+  }
+  console.log(result);
+
   res.render('');
 });
 
