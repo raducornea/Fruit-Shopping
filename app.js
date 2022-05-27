@@ -22,28 +22,53 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => res.send('Hello World'));
 
+const listaIntrebari = [
+  {
+    intrebare: '1. Ce este fructul dragonului?',
+    variante: ['Un ou de culoare fucsia', 'Un deliciu al naturii', 'Nu', 'Poate'],
+    corect: 1
+  },
+  {
+    intrebare: '2. Ce culoare are coaja unui sapote negru?',
+    variante: ['Negru', 'Gri', 'Verde', 'Rosu'],
+    corect: 2
+  },
+  {
+    intrebare: '3. Care fruct are forma de stea?',
+    variante: ['Carambola', 'Kumquat', 'Tamarillo', 'Sapote'],
+    corect: 0
+  },
+  //...
+];
+
 // la accesarea din browser adresei http://localhost:6789/chestionar se va apela funcția specificată
 app.get('/chestionar', (req, res) => {
-	const listaIntrebari = [
-		{
-			intrebare: 'Întrebarea 1',
-			variante: ['varianta 1', 'varianta 2', 'varianta 3', 'varianta 4'],
-			corect: 0
-		},
-    {
-			intrebare: 'Întrebarea 2',
-			variante: ['varianta 1', 'varianta 2', 'varianta 3', 'varianta 4'],
-			corect: 3
-		},
-		//...
-	];
 	// în fișierul views/chestionar.ejs este accesibilă variabila 'intrebari' care conține vectorul de întrebări
 	res.render('chestionar', {intrebari: listaIntrebari});
 });
 
+// aici trebuie pusa logica pentru rezultatul chestionarului
 app.post('/rezultat-chestionar', (req, res) => {
-	console.log(req.body);
-	res.send("formular: " + JSON.stringify(req.body));
+  var responses = req.body;
+  var correctAnswers = 0;
+
+  for (let index = 0; index < listaIntrebari.length; ++index){
+    var result = responses["q" + index];
+    var correctResult = listaIntrebari[index]["corect"];
+
+    if (result == correctResult)
+      ++correctAnswers;
+  }
+
+  res.redirect('/rezultat-chestionar?answers=' + correctAnswers);
+  // res.render("rezultat-chestionar", {answers: correctAnswers});
+	// res.send("formular: " + JSON.stringify(req.body)); // { q0: '1', q1: '2', q2: '0' }
+});
+
+app.get('/rezultat-chestionar', (req, res) => {
+    console.log("Sunt in GET");
+    var correctAnswers = req.query.answers;
+    res.render('rezultat-chestionar', { numarCorecteDeTrimis: correctAnswers });
 });
 
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost:`));

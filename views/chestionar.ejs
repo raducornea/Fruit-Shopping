@@ -1,5 +1,5 @@
 <!-- mai trebuie si action -->
-        <form method="post"> 
+        <form method="post" action="/rezultat-chestionar"> 
         <% for(let i = 0; i < intrebari.length; ++i){ c = 0; %>
 
             <p><%= intrebari[i].intrebare %></p>
@@ -12,5 +12,8 @@
             }
         }
         %>
+        <br>
+        
+        <input type="submit" value="Trimite raspunsuri"/>
         </form>
     
