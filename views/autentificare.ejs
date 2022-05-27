@@ -1,3 +1,7 @@
+<% if(cookie_login_error === "User not found") { %>
+    <p>Utilizator sau parola gresite!!!</p>
+<% } %>
+
 <form method="post" action="/verificare-autentificare">
     <table>
         <tr>

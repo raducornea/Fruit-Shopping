@@ -24,8 +24,7 @@ app.use(cookieParser());
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => {
-  console.log(req.cookies.utilizator);
-  res.render('index.ejs', {cookie_name: req.cookies.utilizator});
+  res.render('index.ejs', {cookie_username: req.cookies.utilizator});
 });
 
 // modul pentru filesystem
@@ -50,7 +49,8 @@ app.get('/chestionar', (req, res) => {
 });
 
 app.get('/autentificare', (req, res) => {
-  res.render('autentificare.ejs');
+  // in randare trebuie dat si pentru express variabila, aici un cookie
+  res.render('autentificare.ejs', {cookie_login_error: req.cookies.mesajEroare});
 });
 
 app.post('/verificare-autentificare', (req, res) => {
@@ -72,11 +72,11 @@ app.post('/verificare-autentificare', (req, res) => {
   
   if(found){
     res.cookie("utilizator", currentUserName);
-    res.redirect('/');
+    res.redirect(302, '/');
   }
   else{
     res.cookie("mesajEroare", "User not found");
-    res.redirect('autentificare');
+    res.redirect(302, 'autentificare');
   }
 });
 
