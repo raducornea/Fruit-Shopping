@@ -58,19 +58,25 @@ app.post('/verificare-autentificare', (req, res) => {
   currentUserName = req.body["username"];
   currentUserPassword = req.body["password"];
 
-  var result = "User not found";
+  var found = false;
   for (const user of listaUtilizatori){
     userNameToCompare = user["nume_utilizator"];
     userPasswordToCompare = user["nume_utilizator"];
 
     if(userNameToCompare === currentUserName && userPasswordToCompare == currentUserName){
-      result = "Successfully connected!";
+      found = true;
       break;
     }
   }
-  console.log(result);
-
-  res.render('');
+  
+  if(found){
+    res.cookie("utilizator", currentUserName);
+    res.redirect('');
+  }
+  else{
+    res.cookie("mesajEroare", "User not found");
+    res.redirect('/autentificare');
+  }
 });
 
 // logica pentru rezultatul chestionarului
