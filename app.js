@@ -66,9 +66,23 @@ app.use('*', functionForEveryRoute);
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'Hello World'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
-app.get('/', (req, res) => {
-  res.render('index.ejs', {cookie_username: req.cookies.utilizator});
+app.get('/', (req, res) => { // mmm root incepe cu 69 hmmmm
+  // gosh, linia ma-sii... luam typeerror din asta ca pica pe undefined
+  if (database === undefined) {
+    new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+    createDatabase();
+    console.log("aaaaa1");
+  }
+  
+  var promise = runQueries();
+  promise.then(() => {
+    console.log("aaaaa2");
+    res.render('index.ejs', {cookie_username: req.cookies.utilizator, html_content: tableContent});
+  })
 });
+
+var tableContent = "please change??????";
+
 
 // modul pentru filesystem
 const fileSystem = require('fs');
@@ -180,6 +194,7 @@ app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost
 ///////////////////////////////////////////////
 
 var sqlite3 = require('sqlite3');
+const res = require('express/lib/response');
 var database;
 
 // index.ejs  
@@ -191,7 +206,6 @@ var database;
 // în care creează o tabelă produse
 app.get('/creare-bd', (req, res) => {
   // cream baza de date cu numele cumparaturi
-  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
   createDatabase();
   
   // cream tabelele
@@ -203,6 +217,8 @@ app.get('/creare-bd', (req, res) => {
 
 // cream tabelele
 function createDatabase() {
+  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+
   console.log("ok created");
   database = new sqlite3.Database('cumparaturi.db', (err) => {
     if (err) {
@@ -268,6 +284,37 @@ app.get('/inserare-bd', (req, res) => {
   // redirect pe root
   res.redirect('/');
 });
+
+function runQueries() {
+  return new Promise((resolve, reject) => {
+    database.all(`
+    select * from produse
+    `, (err, rows) => {
+        // misto ca nu-l actualizeaza decat daca pun asta... wtf man xd
+        tableContent = `<table>`;
+
+        rows.forEach(row => {
+
+            tableContent += `<tr>`;
+
+            tableContent += `<td>${row.id_produs}</td>`;
+            tableContent += `<td>${row.nume_produs}</td>`;
+            tableContent += `<td>${row.cantitate_produs}</td>`;
+            tableContent += `<td>${row.unitate_masura_produs}</td>`;
+            tableContent += `<td>${row.valoare_produs}</td>`;
+            tableContent += `<td>${row.unitate_masura_monetara}</td>`;
+
+            tableContent += `</tr>`;
+
+            // console.log(tableContent);
+            console.log(row.nume_produs);
+        });
+
+        tableContent += `</table>`;
+        resolve();
+    });
+  });
+}
 
 // POST sau GET	/adaugare-cos
 // Serverul adaugă id-ul produsului specificat în corpul 
