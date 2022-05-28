@@ -1,14 +1,20 @@
 [
     {
       "nume_utilizator": "test",
+      "nume": "Test",
+      "prenume": "Johnny",
       "parola_utilizator": "test"
     },
     {
       "nume_utilizator": "john",
+      "nume": "Johnescu",
+      "prenume": "John",
       "parola_utilizator": "hatz"
     },
     {
       "nume_utilizator": "amogus3d",
+      "nume": "Sugoma",
+      "prenume": "Amogus",
       "parola_utilizator": "amogus3d"
     }
 ]

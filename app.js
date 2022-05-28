@@ -26,11 +26,13 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 100000
+    maxAge: 10000
   }
 }));
 
 var actualUserName;
+var actualNume;
+var actualPrenume;
 // aka middleware function
 function functionForEveryRoute(req, res, next){
   // get session data
@@ -40,7 +42,13 @@ function functionForEveryRoute(req, res, next){
      userObj = sessionData.user;
   }
   actualUserName = userObj['username'];
+  actualNume = userObj['nume'];
+  actualPrenume = userObj['prenume'];
+  console.log(actualUserName);
+  console.log(actualNume);
+  console.log(actualPrenume);
 
+  // e importanta, pentru ca nu mai pot da pe login daca nu am cookie curatate
   if (actualUserName === undefined){
     res.clearCookie("utilizator");
     req.session.user = {};
@@ -59,7 +67,6 @@ app.use('*', functionForEveryRoute);
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => {
-  
   res.render('index.ejs', {cookie_username: req.cookies.utilizator});
 });
 
@@ -94,6 +101,8 @@ app.get('/delogare', (req, res) => {
   // set session data
   sessionData = req.session;
   sessionData.user.username = undefined;
+  sessionData.user.nume = undefined;
+  sessionData.user.prenume = undefined;
   res.clearCookie("utilizator");
 
   res.redirect(302, 'autentificare');
@@ -104,11 +113,16 @@ app.post('/verificare-autentificare', (req, res) => {
 
   currentUserName = req.body["username"];
   currentUserPassword = req.body["password"];
+  currentNume = "";
+  currentPrenume = "";
 
   var found = false;
   for (const user of listaUtilizatori){
     userNameToCompare = user["nume_utilizator"];
     userPasswordToCompare = user["nume_utilizator"];
+
+    currentNume = user["nume"];
+    currentPrenume = user["prenume"];
 
     if(userNameToCompare === currentUserName && userPasswordToCompare == currentUserName){
       found = true;
@@ -121,6 +135,8 @@ app.post('/verificare-autentificare', (req, res) => {
     sessionData = req.session;
     sessionData.user = {};
     sessionData.user.username = currentUserName;
+    sessionData.user.nume = currentNume;
+    sessionData.user.prenume = currentPrenume;
 
     res.cookie("utilizator", currentUserName);
     res.clearCookie("mesajEroare");
