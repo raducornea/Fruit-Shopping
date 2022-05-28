@@ -72,6 +72,7 @@ app.post('/verificare-autentificare', (req, res) => {
   
   if(found){
     res.cookie("utilizator", currentUserName);
+    res.cookie("mesajEroare", "");
     res.redirect(302, '/');
   }
   else{
