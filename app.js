@@ -1,4 +1,5 @@
 const cookieParser = require('cookie-parser');
+const session = require('express-session')
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const bodyParser = require('body-parser')
@@ -19,11 +20,46 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // pentru cookie-uri
 app.use(cookieParser());
+// pentru sesiuni // https://www.js-tutorials.com/nodejs-tutorial/nodejs-session-example-using-express-session/
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 100000
+  }
+}));
+
+var actualUserName;
+// aka middleware function
+function functionForEveryRoute(req, res, next){
+  // get session data
+  sessionData = req.session;
+  let userObj = {};
+  if(sessionData.user) {
+     userObj = sessionData.user;
+  }
+  actualUserName = userObj['username'];
+
+  if (actualUserName === undefined){
+    res.clearCookie("utilizator");
+    req.session.user = {};
+  }
+
+  // pentru date intermediare
+  res.locals["session_username"] = actualUserName;
+
+  next();
+}
+
+// for all routes, execute a function
+app.use('*', functionForEveryRoute);
 
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'Hello World'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => {
+  
   res.render('index.ejs', {cookie_username: req.cookies.utilizator});
 });
 
@@ -53,6 +89,16 @@ app.get('/autentificare', (req, res) => {
   res.render('autentificare.ejs', {cookie_login_error: req.cookies.mesajEroare});
 });
 
+app.get('/delogare', (req, res) => {
+  // clear cookies and session before
+  // set session data
+  sessionData = req.session;
+  sessionData.user.username = undefined;
+  res.clearCookie("utilizator");
+
+  res.redirect(302, 'autentificare');
+})
+
 app.post('/verificare-autentificare', (req, res) => {
   console.log(req.body);
 
@@ -71,12 +117,18 @@ app.post('/verificare-autentificare', (req, res) => {
   }
   
   if(found){
+    // set session data
+    sessionData = req.session;
+    sessionData.user = {};
+    sessionData.user.username = currentUserName;
+
     res.cookie("utilizator", currentUserName);
-    res.cookie("mesajEroare", "");
+    res.clearCookie("mesajEroare");
     res.redirect(302, '/');
   }
   else{
     res.cookie("mesajEroare", "User not found");
+    res.clearCookie("utilizator");
     res.redirect(302, 'autentificare');
   }
 });

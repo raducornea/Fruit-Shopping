@@ -5,6 +5,14 @@
     </head>
 
     <main>
+        <% if (session_username !== undefined) { %>
+        <p>Logat ca <%=session_username%></p>
+
+        <form>
+            <button type="submit" formaction="/delogare">Delogare</button>
+        </form>
+        <% } else { %>
+        <% } %>
         <%- body %>
     </main>
 </html>
