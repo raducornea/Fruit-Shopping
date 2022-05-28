@@ -175,3 +175,107 @@ app.get('/rezultat-chestionar', (req, res) => {
 
 app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost:${port}`));
 
+///////////////////////////////////////////////
+/*        vvvvv Laboratorul 12 vvvvv         */
+///////////////////////////////////////////////
+
+var sqlite3 = require('sqlite3');
+var database;
+
+// index.ejs  
+// Serverul răspunde cu o pagină de Bine ai 
+// venit! și cu lista de produse din baza de date.
+
+// Serverul se conectează la serverul de baze de 
+// date și creează o bază de date cu numele cumparaturi, 
+// în care creează o tabelă produse
+app.get('/creare-bd', (req, res) => {
+  // cream baza de date cu numele cumparaturi
+  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+  createDatabase();
+  
+  // cream tabelele
+  createTables(database);
+  
+  // redirect pe root
+  res.redirect('/');
+});
+
+// cream tabelele
+function createDatabase() {
+  console.log("ok created");
+  database = new sqlite3.Database('cumparaturi.db', (err) => {
+    if (err) {
+      console.log("Getting error " + err);
+      exit(1);
+    }
+  });
+}
+
+// tabela cu numele produse
+function createTables(newdb) {
+  // Mere 2 kg 10 lei
+  // Fructul dragonului 1 buc 5 lei
+  newdb.exec(`
+  create table produse (
+      id_produs int primary key not null,
+      nume_produs text not null,
+      cantitate_produs real not null,
+      unitate_masura_produs text not null,
+      valoare_produs real not null,
+      unitate_masura_monetara text not null
+  );
+
+      `, ()  => {
+          console.log("succes la creare?");
+          // nu rulam niciun querry momentan wtf
+          // runQueries(newdb);
+  });
+}
+
+// inserturi in tabela produse
+function insertValuesInTable(newdb) {
+  // Mere 2 kg 10 lei
+  // Fructul dragonului 1 buc 5 lei
+  newdb.exec(`
+  insert into produse (id_produs, nume_produs, cantitate_produs, unitate_masura_produs, valoare_produs, unitate_masura_monetara)
+      values (1, 'Mere', 1, 'kg', 5, 'lei'),
+             (2, 'Fructul Dragonului', 1, 'buc', 7, 'lei'),
+             (3, 'Sapote Negru', 1, 'buc', 15, 'lei'),
+             (4, 'Carambola', 1, 'buc', 10, 'lei'),
+             (5, 'Afine', 500, 'g', 7, 'lei'),
+             (6, 'Capsuni', 250, 'g', 4.5, 'lei'),
+             (7, 'Banane', 1, 'kg', 4, 'lei');
+
+      `, ()  => {
+          console.log("succes la inserare?");
+          // nu rulam niciun querry momentan wtf
+          // runQueries(newdb);
+  });
+}
+
+// Serverul se conectează la serverul de baze de date 
+// și inserează mai multe produse în tabela produse, 
+// după care răspunde clientului cu un redirect spre resursa /.
+app.get('/inserare-bd', (req, res) => {
+  // cream baza de date cu numele cumparaturi
+  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+  createDatabase();
+  
+  // inseram produse in tabela produse
+  insertValuesInTable(database);
+  
+  // redirect pe root
+  res.redirect('/');
+});
+
+// POST sau GET	/adaugare-cos
+// Serverul adaugă id-ul produsului specificat în corpul 
+// mesajului HTTP într-un vector din variabila de 
+// sesiune (sau într-un vector global dacă nu ați implementat 
+// tema 3 din laboratorul 11).
+
+// GET /vizualizare-cos
+// Serverul răspunde cu o pagină de 
+// Vizualizare coș prin inserarea vizualizare-cos.ejs 
+// în layout.ejs și returnarea rezultatului la client.
