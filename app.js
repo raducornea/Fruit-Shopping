@@ -485,11 +485,11 @@ app.post('/admin', (req, res) => {
 
 // inserturi in tabela produse
 function insertValuesInTableCUSTOM(nume, cantitate, unitate_masura, pret, umpret) {
-  database.exec(`
+  database.run(`
   insert into produse (nume_produs, cantitate_produs, unitate_masura_produs, valoare_produs, unitate_masura_monetara)
-      values ('Mure', 1, 'kg', 5, 'lei');
+      values (?, ?, ?, ?, ?);
 
-      `, ()  => {
+      `, nume, cantitate, unitate_masura, pret, umpret, ()  => {
           console.log("succes la inserare?");
           // nu rulam niciun querry momentan wtf
           // runQueries(newdb);
