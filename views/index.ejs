@@ -3,12 +3,14 @@
 <% } else { %>
     <p>Bine ai revenit, <%=cookie_username%>!</p>
 <% } %>
-<form method="get" action="/creare-bd">
+<br>
+<a href="/creare-bd">
     <input type="submit" value="Creare BD" />
-</form>
-<form method="get" action="/inserare-bd">
+</a>
+<br>
+<a href="/inserare-bd">
     <input type="submit" value="Încarcare BD" />
-</form>
+</a>
 
 <%- html_content %>
 <% if(cookie_username === undefined) { %>

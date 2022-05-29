@@ -7,10 +7,10 @@
     <main>
         <% if (session_username !== undefined) { %>
         <p>Logat ca <%=session_username%></p>
-
-        <form>
-            <button type="submit" formaction="/delogare">Delogare</button>
-        </form>
+        
+        <a href="/delogare">
+            <button>Delogare</button>
+        </a>
         <% } else { %>
         <% } %>
         <%- body %>

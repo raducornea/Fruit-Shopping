@@ -239,7 +239,8 @@ app.post('/rezultat-chestionar', (req, res) => {
   }
 
   // se redirectioneaza la numarul de raspunsuri corecte
-  res.redirect('/rezultat-chestionar?answers=' + correctAnswers);
+  // res.redirect('/rezultat-chestionar?answers=' + correctAnswers);
+  res.render('rezultat-chestionar', { numarCorecteDeTrimis: correctAnswers });
 });
 
 // pagina care contine numarul de raspunsuri corecte propriu-zisa
@@ -267,6 +268,8 @@ var database;
 // date și creează o bază de date cu numele cumparaturi, 
 // în care creează o tabelă produse
 app.get('/creare-bd', (req, res) => {
+  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  
   // cream baza de date cu numele cumparaturi
   createDatabase();
   
@@ -338,7 +341,9 @@ function insertValuesInTable(newdb) {
 // Serverul se conectează la serverul de baze de date 
 // și inserează mai multe produse în tabela produse, 
 // după care răspunde clientului cu un redirect spre resursa /.
-app.get('/inserare-bd', (req, res) => { 
+app.get('/inserare-bd', (req, res) => {
+  console.log("aaaaaaaaa");
+
   // inseram produse in tabela produse
   insertValuesInTable(database);
   
