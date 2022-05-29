@@ -1,8 +1,8 @@
 const cookieParser = require('cookie-parser');
-const session = require('express-session')
+const session = require('express-session');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -33,31 +33,61 @@ app.use(session({
 var actualUserName;
 var actualNume;
 var actualPrenume;
+var retries = 3;
 // aka middleware function
 function functionForEveryRoute(req, res, next){
-  // get session data
-  sessionData = req.session;
-  let userObj = {};
-  if(sessionData.user) {
-     userObj = sessionData.user;
-  }
-  actualUserName = userObj['username'];
-  actualNume = userObj['nume'];
-  actualPrenume = userObj['prenume'];
-  console.log(actualUserName);
-  console.log(actualNume);
-  console.log(actualPrenume);
+  // target ip in case they attack
+  var ipAddress = getClientIp(req);
 
-  // e importanta, pentru ca nu mai pot da pe login daca nu am cookie curatate
-  if (actualUserName === undefined){
-    res.clearCookie("utilizator");
-    req.session.user = {};
+  var paths = app._router.stack // registered routes
+  .filter(r => r.route) // take out all the middleware
+  .map(r => r.route.path); // get all the paths
+  var currentPath = req.originalUrl;
+
+  if(!paths.includes(currentPath)){
+    if (!BLACKLIST.includes(ipAddress)){
+      BLACKLIST.push(ipAddress);
+    }
+    res.send(`You should not do that.`);
+    return;
   }
 
-  // pentru date intermediare
-  res.locals["session_username"] = actualUserName;
+  if(BLACKLIST.includes(ipAddress)){
+    // blochez temporar
+    res.send(`You are not on the Whitelist. ${retries} left`);
+    if(retries == 0){
+      retries = 3;
+      BLACKLIST.pop(ipAddress);
+    }
+    else{
+      retries--;
+    }
+  }
+  else{
+    // get session data
+    sessionData = req.session;
+    let userObj = {};
+    if(sessionData.user) {
+      userObj = sessionData.user;
+    }
+    actualUserName = userObj['username'];
+    actualNume = userObj['nume'];
+    actualPrenume = userObj['prenume'];
+    console.log(actualUserName);
+    console.log(actualNume);
+    console.log(actualPrenume);
 
-  next();
+    // e importanta, pentru ca nu mai pot da pe login daca nu am cookie curatate
+    if (actualUserName === undefined){
+      res.clearCookie("utilizator");
+      req.session.user = {};
+    }
+
+    // pentru date intermediare
+    res.locals["session_username"] = actualUserName;
+
+    next();
+  }
 }
 
 // for all routes, execute a function
@@ -66,12 +96,12 @@ app.use('*', functionForEveryRoute);
 // la accesarea din browser adresei http://localhost:6789/ se va returna textul 'Hello World'
 // proprietățile obiectului Request - req - https://expressjs.com/en/api.html#req
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
-app.get('/', (req, res) => { // mmm root incepe cu 69 hmmmm
+app.get('/', (req, res) => {
   // gosh, linia ma-sii... luam typeerror din asta ca pica pe undefined
   var promise1 = createDatabase();
   promise1.then(() => {
     console.log("aaaaa1");
-  
+
     var promise = runQueries();
     promise.then(() => {
       console.log("aaaaa2");
@@ -204,6 +234,7 @@ app.listen(port, () => console.log(`Serverul rulează la adresa http://localhost
 
 var sqlite3 = require('sqlite3');
 const res = require('express/lib/response');
+const { render, redirect } = require('express/lib/response');
 var database;
 
 // index.ejs  
@@ -493,3 +524,21 @@ function insertValuesInTableCUSTOM(nume, cantitate, unitate_masura, pret, umpret
           // runQueries(newdb);
   });
 }
+
+// pentru blocare ip-uri
+// https://medium.com/hackernoon/cracking-nut-nodejs-express-block-get-remote-request-client-ip-address-e4cdfa461add
+  
+// Part1, defining blacklist
+var BLACKLIST = ['0.0.5.1'];
+// Part2, Geting client IP
+var getClientIp = function(req) {
+  var ipAddress = req.connection.remoteAddress;
+  if (!ipAddress) {
+    return '';
+  }
+  // convert from "::ffff:192.0.0.1" to "192.0.0.1"
+  if (ipAddress.substr(0, 7) == "::ffff:") {
+    ipAddress = ipAddress.substr(7);
+  }
+  return ipAddress;
+};
