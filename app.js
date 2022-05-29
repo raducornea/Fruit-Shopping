@@ -474,11 +474,9 @@ app.post('/admin', (req, res) => {
   var pret = parseFloat(req.body.pret);
   var umpret = req.body.umpret;
 
-  // if(!(nume === "" || umcantitate === "" || umpret === "" || isNaN(pret) || isNaN (cantitate))){
-    console.log("yea");
-
+  if(!(nume === "" || umcantitate === "" || umpret === "" || isNaN(pret) || isNaN (cantitate))){
     insertValuesInTableCUSTOM(nume, cantitate, umcantitate, pret, umpret);
-  // }
+  }
 
   res.render('admin.ejs', {html_admin: admin_role});
 })
