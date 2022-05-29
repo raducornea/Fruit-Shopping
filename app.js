@@ -68,19 +68,18 @@ app.use('*', functionForEveryRoute);
 // proprietățile obiectului Response - res - https://expressjs.com/en/api.html#res
 app.get('/', (req, res) => { // mmm root incepe cu 69 hmmmm
   // gosh, linia ma-sii... luam typeerror din asta ca pica pe undefined
-  if (database === undefined) {
-    new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
-    createDatabase();
+  var promise1 = createDatabase();
+  promise1.then(() => {
     console.log("aaaaa1");
-  }
   
-  var promise = runQueries();
-  promise.then(() => {
-    console.log("aaaaa2");
-    res.render('index.ejs', {cookie_username: req.cookies.utilizator, html_content: tableContent});
-  })
+    var promise = runQueries();
+    promise.then(() => {
+      console.log("aaaaa2");
+      res.render('index.ejs', {cookie_username: req.cookies.utilizator, html_content: tableContent});
+    });
+  });
 });
-
+ 
 var tableContent = "please change??????";
 
 
@@ -118,6 +117,7 @@ app.get('/delogare', (req, res) => {
   sessionData.user.nume = undefined;
   sessionData.user.prenume = undefined;
   sessionData.user.produse = [];
+  sessionData.user.is_admin = undefined;
   res.clearCookie("utilizator");
 
   res.redirect(302, 'autentificare');
@@ -130,6 +130,12 @@ app.post('/verificare-autentificare', (req, res) => {
   currentUserPassword = req.body["password"];
   currentNume = "";
   currentPrenume = "";
+  is_admin = false;
+
+  if (currentUserName === "admin" && currentUserPassword === "admin"){
+    is_admin = true;
+  }
+  console.log(is_admin);
 
   var found = false;
   for (const user of listaUtilizatori){
@@ -153,6 +159,7 @@ app.post('/verificare-autentificare', (req, res) => {
     sessionData.user.nume = currentNume;
     sessionData.user.prenume = currentPrenume;
     sessionData.user.produse = [];
+    sessionData.user.is_admin = is_admin;
 
     res.cookie("utilizator", currentUserName);
     res.clearCookie("mesajEroare");
@@ -219,14 +226,17 @@ app.get('/creare-bd', (req, res) => {
 
 // cream tabelele
 function createDatabase() {
-  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
+  return new Promise((resolve, reject) => {
+    new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
 
-  console.log("ok created");
-  database = new sqlite3.Database('cumparaturi.db', (err) => {
-    if (err) {
-      console.log("Getting error " + err);
-      exit(1);
-    }
+    console.log("ok created");
+    database = new sqlite3.Database('cumparaturi.db', (err) => {
+      if (err) {
+        console.log("Getting error " + err);
+        exit(1);
+      }                                                                                                                                                                                     
+    });
+    resolve();
   });
 }
 
@@ -236,12 +246,12 @@ function createTables(newdb) {
   // Fructul dragonului 1 buc 5 lei
   newdb.exec(`
   create table produse (
-      id_produs int primary key not null,
-      nume_produs text not null,
+      id_produs INTEGER PRIMARY KEY AUTOINCREMENT,
+      nume_produs text unique not null,
       cantitate_produs real not null,
       unitate_masura_produs text not null,
       valoare_produs real not null,
-      unitate_masura_monetara text not null
+      unitate_masura_monetara text not null 
   );
 
       `, ()  => {
@@ -256,14 +266,14 @@ function insertValuesInTable(newdb) {
   // Mere 2 kg 10 lei
   // Fructul dragonului 1 buc 5 lei
   newdb.exec(`
-  insert into produse (id_produs, nume_produs, cantitate_produs, unitate_masura_produs, valoare_produs, unitate_masura_monetara)
-      values (1, 'Mere', 1, 'kg', 5, 'lei'),
-             (2, 'Fructul Dragonului', 1, 'buc', 7, 'lei'),
-             (3, 'Sapote Negru', 1, 'buc', 15, 'lei'),
-             (4, 'Carambola', 1, 'buc', 10, 'lei'),
-             (5, 'Afine', 500, 'g', 7, 'lei'),
-             (6, 'Capsuni', 250, 'g', 4.5, 'lei'),
-             (7, 'Banane', 1, 'kg', 4, 'lei');
+  insert into produse (nume_produs, cantitate_produs, unitate_masura_produs, valoare_produs, unitate_masura_monetara)
+      values ('Mere', 1, 'kg', 5, 'lei'),
+             ('Fructul Dragonului', 1, 'buc', 7, 'lei'),
+             ('Sapote Negru', 1, 'buc', 15, 'lei'),
+             ('Carambola', 1, 'buc', 10, 'lei'),
+             ('Afine', 500, 'g', 7, 'lei'),
+             ('Capsuni', 250, 'g', 4.5, 'lei'),
+             ('Banane', 1, 'kg', 4, 'lei');
 
       `, ()  => {
           console.log("succes la inserare?");
@@ -275,11 +285,7 @@ function insertValuesInTable(newdb) {
 // Serverul se conectează la serverul de baze de date 
 // și inserează mai multe produse în tabela produse, 
 // după care răspunde clientului cu un redirect spre resursa /.
-app.get('/inserare-bd', (req, res) => {
-  // cream baza de date cu numele cumparaturi
-  new sqlite3.Database('./cumparaturi.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
-  createDatabase();
-  
+app.get('/inserare-bd', (req, res) => { 
   // inseram produse in tabela produse
   insertValuesInTable(database);
   
@@ -295,6 +301,7 @@ function runQueries() {
         // misto ca nu-l actualizeaza decat daca pun asta... wtf man xd
         tableContent = `<table>`;
 
+        if (rows !== undefined)
         rows.forEach(row => {
 
             tableContent += `<tr>`;
@@ -441,5 +448,50 @@ function selectRows(id, counter){
           resolve(myobject);
         });
     });
+  });
+}
+
+////////////////////////////////////////////////////
+//          vvvvv Laboratorul 13 vvvvv            //
+////////////////////////////////////////////////////
+
+app.get('/admin', (req, res) => {
+  // get session data
+  let userObj = {};
+  if(sessionData.user) {
+    userObj = sessionData.user;
+  }
+
+  admin_role = userObj['is_admin'];
+
+  res.render('admin.ejs', {html_admin: admin_role});
+})
+
+app.post('/admin', (req, res) => {
+  var nume = req.body.nume;
+  var cantitate = parseFloat(req.body.cantitate);
+  var umcantitate = req.body.umcantitate;
+  var pret = parseFloat(req.body.pret);
+  var umpret = req.body.umpret;
+
+  // if(!(nume === "" || umcantitate === "" || umpret === "" || isNaN(pret) || isNaN (cantitate))){
+    console.log("yea");
+
+    insertValuesInTableCUSTOM(nume, cantitate, umcantitate, pret, umpret);
+  // }
+
+  res.render('admin.ejs', {html_admin: admin_role});
+})
+
+// inserturi in tabela produse
+function insertValuesInTableCUSTOM(nume, cantitate, unitate_masura, pret, umpret) {
+  database.exec(`
+  insert into produse (nume_produs, cantitate_produs, unitate_masura_produs, valoare_produs, unitate_masura_monetara)
+      values ('Mure', 1, 'kg', 5, 'lei');
+
+      `, ()  => {
+          console.log("succes la inserare?");
+          // nu rulam niciun querry momentan wtf
+          // runQueries(newdb);
   });
 }

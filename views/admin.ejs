@@ -1,0 +1,38 @@
+<% if(html_admin === true) { %>
+<p>Hello, there, admin</p>
+
+<% } else { %>
+<p>Trebuie sa fii admin ca sa folosesti pagina Haaah!</p>
+<% } %>
+<form method="post" action="/admin">
+    <table>
+        <tr>
+            <td><label>Nume Fruct</label></td>
+            <td><input type="text" name="nume"></td>
+        </tr>
+
+        <tr>
+            <td><label>Cantitate</label></td>
+            <td><input min=0 type="number" name="cantitate"></td>
+        </tr>
+
+        <tr>
+            <td><label>Unitate de masura cantitate</label></td>
+            <td><input type="text" name="umcantitate"></td>
+        </tr>
+
+        <tr>
+            <td><label>Pret</label></td>
+            <td><input min=0 type="number" step="0.01" name="pret"></td>
+        </tr>
+
+        <tr>
+            <td><label>Unitate de masura pret</label></td>
+            <td><input type="text" name="umpret"></td>
+        </tr>
+
+        <tr rowspan="2">
+            <td><input type="submit" value="Insereaza fruct nou"></td>
+        </tr>
+    </table>
+</form>

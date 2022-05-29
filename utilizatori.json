@@ -16,5 +16,11 @@
       "nume": "Sugoma",
       "prenume": "Amogus",
       "parola_utilizator": "amogus3d"
+    },
+    {
+      "nume_utilizator": "admin",
+      "nume": "admin",
+      "prenume": "admin",
+      "parola_utilizator": "admin"
     }
 ]
