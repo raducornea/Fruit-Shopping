@@ -26,7 +26,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 10000
+    maxAge: 1000000
   }
 }));
 
@@ -344,7 +344,102 @@ app.post('/adaugare-cos', (req, res) => {
   res.redirect('/');
 });
 
-// GET /vizualizare-cos
 // Serverul răspunde cu o pagină de 
 // Vizualizare coș prin inserarea vizualizare-cos.ejs 
 // în layout.ejs și returnarea rezultatului la client.
+var tableAddedProducts = "";
+app.get('/vizualizare-cos', (req, res) => {
+  let userObj = {};
+  if(sessionData.user) {
+     userObj = sessionData.user;
+  }
+  lista_produse_cumparate = userObj['produse'];
+  console.log(lista_produse_cumparate);
+
+  if(lista_produse_cumparate === undefined){
+    res.render('vizualizare-cos.ejs', {html_content_produse: "<p>Lista este goala</p>"});
+  }
+  else{
+    var promise = executeFor();
+    promise.then(() => {
+      console.log("aaaaaTRIPLE");
+      res.render('vizualizare-cos.ejs', {html_content_produse: tableAddedProducts});
+    })
+  }
+});
+
+function executeFor(){
+  return new Promise((resolve, reject) => {
+    // get session data
+    let userObj = {};
+    if(sessionData.user) {
+      userObj = sessionData.user;
+    }
+    lista_produse_cumparate = userObj['produse'];
+    console.log(lista_produse_cumparate);
+
+    var promises = [];
+    var counter = 0;
+    tableAddedProducts = `<table>`;
+    // trebuie parcursa toata lista...
+    for(const id of lista_produse_cumparate){
+      promises.push(selectRows(parseInt(id), ++counter));
+    }
+
+    function compare( a, b ) {
+      if ( a.counter < b.counter ){
+        return -1;
+      }
+      if ( a.counter > b.counter ){
+        return 1;
+      }
+      return 0;
+    }
+
+    // varianta 1 nesincrona
+    // trebuie facute toate promisiunile :O
+    Promise.all(promises).then((values) => {
+      console.log(values);
+
+      var sorted_list = values.sort(compare);
+      for(const myobject of sorted_list){
+        tableAddedProducts += `<tr>`;
+        
+        tableAddedProducts += `<td>${myobject.counter}</td>`;
+        tableAddedProducts += `<td>${myobject.nume_produs}</td>`;
+        tableAddedProducts += `<td>${myobject.cantitate_produs}</td>`;
+        tableAddedProducts += `<td>${myobject.unitate_masura_produs}</td>`;
+        tableAddedProducts += `<td>${myobject.valoare_produs}</td>`;
+        tableAddedProducts += `<td>${myobject.unitate_masura_monetara}</td>`;
+
+        tableAddedProducts += `</tr>`;
+      }
+
+      tableAddedProducts += `</table>`;
+      resolve();
+    })
+  });
+}
+
+function selectRows(id, counter){
+  return new Promise((resolve, reject) => {
+    var myobject = {};
+
+    database.all(`
+    select * from produse where id_produs = ?
+    `, id, (err, rows) => {
+
+        rows.forEach(row => {
+          // obiect care contine datele de care avem nevoie
+          myobject.counter = counter;
+          myobject.nume_produs = row.nume_produs;
+          myobject.cantitate_produs = row.cantitate_produs;
+          myobject.unitate_masura_produs = row.unitate_masura_produs;
+          myobject.valoare_produs = row.valoare_produs;
+          myobject.unitate_masura_monetara = row.unitate_masura_monetara;
+
+          resolve(myobject);
+        });
+    });
+  });
+}
