@@ -33,9 +33,9 @@ app.use(session({
 var actualUserName;
 var actualNume;
 var actualPrenume;
-var retries = 3;
+// var retries = 3;
 // aka middleware function
-function functionForEveryRoute(req, res, next){
+async function functionForEveryRoute(req, res, next){
   // target ip in case they attack
   var ipAddress = getClientIp(req);
 
@@ -48,20 +48,29 @@ function functionForEveryRoute(req, res, next){
     if (!BLACKLIST.includes(ipAddress)){
       BLACKLIST.push(ipAddress);
     }
-    res.send(`You should not do that.`);
+    res.send(`You should not seek weird paths.`);
     return;
   }
 
   if(BLACKLIST.includes(ipAddress)){
     // blochez temporar
-    res.send(`You are not on the Whitelist. ${retries} left`);
-    if(retries == 0){
-      retries = 3;
+    var secunde = 5;
+    await new Promise(resolve => {
+      setTimeout(resolve, secunde * 1000);
+      // res.send(`You are not on the Whitelist. ${secunde} second left to wait`);
+    }).then(() => {
       BLACKLIST.pop(ipAddress);
-    }
-    else{
-      retries--;
-    }
+      res.redirect('/');
+    });
+
+    // if(retries == 0){
+    //   retries = 3;
+    //   BLACKLIST.pop(ipAddress);
+    //   allowed_attempts = 3;
+    // }
+    // else{
+    //   retries--;
+    // }
   }
   else{
     // get session data
@@ -153,6 +162,7 @@ app.get('/delogare', (req, res) => {
   res.redirect(302, 'autentificare');
 })
 
+var allowed_attempts = 3;
 app.post('/verificare-autentificare', (req, res) => {
   console.log(req.body);
 
@@ -182,6 +192,8 @@ app.post('/verificare-autentificare', (req, res) => {
   }
   
   if(found){
+    allowed_attempts = 3;
+
     // set session data
     sessionData = req.session;
     sessionData.user = {};
@@ -198,7 +210,17 @@ app.post('/verificare-autentificare', (req, res) => {
   else{
     res.cookie("mesajEroare", "User not found");
     res.clearCookie("utilizator");
-    res.redirect(302, 'autentificare');
+    allowed_attempts--;
+
+    if(allowed_attempts > 0){
+      res.redirect(302, 'autentificare');
+    }
+    else{
+       // target ip in case they attack
+      var ipAddress = getClientIp(req);
+      BLACKLIST.push(ipAddress);
+      res.send('Be careful with your passwords');
+    }
   }
 });
 
