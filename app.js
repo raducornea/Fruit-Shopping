@@ -117,6 +117,7 @@ app.get('/delogare', (req, res) => {
   sessionData.user.username = undefined;
   sessionData.user.nume = undefined;
   sessionData.user.prenume = undefined;
+  sessionData.user.produse = [];
   res.clearCookie("utilizator");
 
   res.redirect(302, 'autentificare');
@@ -151,6 +152,7 @@ app.post('/verificare-autentificare', (req, res) => {
     sessionData.user.username = currentUserName;
     sessionData.user.nume = currentNume;
     sessionData.user.prenume = currentPrenume;
+    sessionData.user.produse = [];
 
     res.cookie("utilizator", currentUserName);
     res.clearCookie("mesajEroare");
@@ -303,8 +305,14 @@ function runQueries() {
             tableContent += `<td>${row.unitate_masura_produs}</td>`;
             tableContent += `<td>${row.valoare_produs}</td>`;
             tableContent += `<td>${row.unitate_masura_monetara}</td>`;
-            tableContent += `<td><button class="ADD_TO_CART">Adaugă în coș</button></td>`;
-
+            tableContent += `
+              <td>
+                <form method="post" action="/adaugare-cos">
+                  <input type="submit" class="ADD_TO_CART" value="Adaugă în coș">
+                  <input type="hidden" name="id" value="${row.id_produs}">
+                </form>
+              </td>
+            `;
             tableContent += `</tr>`;
             // console.log(row.nume_produs);
         });
@@ -315,11 +323,26 @@ function runQueries() {
   });
 }
 
-// POST sau GET	/adaugare-cos
 // Serverul adaugă id-ul produsului specificat în corpul 
-// mesajului HTTP într-un vector din variabila de 
-// sesiune (sau într-un vector global dacă nu ați implementat 
-// tema 3 din laboratorul 11).
+// mesajului HTTP într-un vector din variabila de sesiune
+app.post('/adaugare-cos', (req, res) => {
+  var id_produs = req.body.id;
+  console.log(id_produs);
+
+  // set session data
+  sessionData = req.session;
+  sessionData.user.produse.push(id_produs);
+
+  // get session data
+  let userObj = {};
+  if(sessionData.user) {
+     userObj = sessionData.user;
+  }
+  lista_produse_cumparate = userObj['produse'];
+  console.log(lista_produse_cumparate);
+
+  res.redirect('/');
+});
 
 // GET /vizualizare-cos
 // Serverul răspunde cu o pagină de 
