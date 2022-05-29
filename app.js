@@ -303,11 +303,10 @@ function runQueries() {
             tableContent += `<td>${row.unitate_masura_produs}</td>`;
             tableContent += `<td>${row.valoare_produs}</td>`;
             tableContent += `<td>${row.unitate_masura_monetara}</td>`;
+            tableContent += `<td><button class="ADD_TO_CART">Adaugă în coș</button></td>`;
 
             tableContent += `</tr>`;
-
-            // console.log(tableContent);
-            console.log(row.nume_produs);
+            // console.log(row.nume_produs);
         });
 
         tableContent += `</table>`;

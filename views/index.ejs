@@ -9,4 +9,20 @@
 <form method="get" action="/inserare-bd">
     <input type="submit" value="Încarcare BD" />
 </form>
+
 <%- html_content %>
+<% if(cookie_username === undefined) { %>
+    <script>
+        var add_to_cart_elements = document.getElementsByClassName("ADD_TO_CART");
+        for(const add_to_cart of add_to_cart_elements){
+            add_to_cart.disabled = true;
+        }
+    </script>
+<% } else { %>
+    <script>
+        var add_to_cart_elements = document.getElementsByClassName("ADD_TO_CART");
+        for(const add_to_cart of add_to_cart_elements){
+            add_to_cart.disabled = false;
+        }
+    </script>
+<% } %>
