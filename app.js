@@ -44,7 +44,13 @@ async function functionForEveryRoute(req, res, next){
   .map(r => r.route.path); // get all the paths
   var currentPath = req.originalUrl;
 
+  // console.log(BLACKLIST);
+  // console.log(paths);
+  // console.log(currentPath);
+
   if(!paths.includes(currentPath)){
+    console.log("blocheeez");
+
     if (!BLACKLIST.includes(ipAddress)){
       BLACKLIST.push(ipAddress);
     }
@@ -54,7 +60,7 @@ async function functionForEveryRoute(req, res, next){
 
   if(BLACKLIST.includes(ipAddress)){
     // blochez temporar
-    var secunde = 5;
+    var secunde = 3;
     await new Promise(resolve => {
       setTimeout(resolve, secunde * 1000);
       // res.send(`You are not on the Whitelist. ${secunde} second left to wait`);
@@ -99,6 +105,8 @@ async function functionForEveryRoute(req, res, next){
   }
 }
 
+app.get('/favicon.ico', (req, res) => res.status(204));
+
 // for all routes, execute a function
 app.use('*', functionForEveryRoute);
 
@@ -118,7 +126,7 @@ app.get('/', (req, res) => {
     });
   });
 });
- 
+
 var tableContent = "please change??????";
 
 
@@ -556,7 +564,7 @@ function insertValuesInTableCUSTOM(nume, cantitate, unitate_masura, pret, umpret
 // https://medium.com/hackernoon/cracking-nut-nodejs-express-block-get-remote-request-client-ip-address-e4cdfa461add
   
 // Part1, defining blacklist
-var BLACKLIST = ['0.0.5.1'];
+var BLACKLIST = [];
 // Part2, Geting client IP
 var getClientIp = function(req) {
   var ipAddress = req.connection.remoteAddress;
