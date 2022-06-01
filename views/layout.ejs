@@ -1,18 +1,55 @@
 <!DOCTYPE html>
 <html lang="ro">
-    <head>
-        <title>Magazin Fructe</title>
-    </head>
+    <div class="container">
+        <div class="container_without_footer">
+            <head>
+                <link rel="stylesheet" type="text/css" href="css/stil.css"/>
+                <title>Magazin Fructe</title>
+            </head>
+            
+            <body>
+                <div class="header">
+                    <header>
+                        <h1>Fruitella</h1>
+                    </header>
+                </div>
 
-    <main>
-        <% if (session_username !== undefined) { %>
-        <p>Logat ca <%=session_username%></p>
-        
-        <a href="/delogare">
-            <button>Delogare</button>
-        </a>
-        <% } else { %>
-        <% } %>
-        <%- body %>
-    </main>
+                <div class="nav">
+                    <nav>
+                        <a href="/">Acasă</a>
+                        <a href="/chestionar">Chestionar</a>
+
+                        <% if (session_username !== undefined) { %>
+                        <a href="/delogare">Delogare</a>
+                        <% } else { %>
+                        <a href="/autentificare">Autentificare</a>
+                        <% } %>
+
+                        <a href="/admin">ONLY STAFF</a>
+                        <a href="/vizualizare-cos">Coș</a>
+                    </nav>
+                </div>
+
+                <div class="content">
+                    <main>
+                        <% if (session_username !== undefined) { %>
+                        <p>Logat ca <%=session_username%></p>
+                        
+                        <a href="/delogare">
+                            <button>Delogare</button>
+                        </a>
+                        <% } else { %>
+                        <% } %>
+                        <%- body %>
+                    </main>
+                </div>
+
+                <div id="footer" class="footer">
+                    <footer>
+                        <p>&copy; Magazin Fructe</p>
+                    </footer>
+                </div>
+
+            </body>
+        </div>
 </html>

@@ -1,16 +1,26 @@
 <% if(cookie_username === undefined) { %>
-    <a href="/autentificare">Autentificare</a>
+    <a href="/autentificare">
+        <button>Autentificare</button>
+    </a>
 <% } else { %>
     <p>Bine ai revenit, <%=cookie_username%>!</p>
 <% } %>
 <br>
-<a href="/creare-bd">
-    <input type="submit" value="Creare BD" />
-</a>
-<br>
-<a href="/inserare-bd">
-    <input type="submit" value="Încarcare BD" />
-</a>
+<table>
+    <tr>
+        <td>
+            <a href="/creare-bd">
+                <input type="submit" value="Creare BD" />
+            </a>
+        </td>
+
+        <td>
+            <a href="/inserare-bd">
+                <input type="submit" value="Încarcare BD" />
+            </a>
+        </td>
+    </tr>
+</table>
 
 <%- html_content %>
 <% if(cookie_username === undefined) { %>

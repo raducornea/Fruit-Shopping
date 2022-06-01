@@ -44,9 +44,9 @@ async function functionForEveryRoute(req, res, next){
   .map(r => r.route.path); // get all the paths
   var currentPath = req.originalUrl;
 
-  // console.log(BLACKLIST);
-  // console.log(paths);
-  // console.log(currentPath);
+  console.log(BLACKLIST);
+  console.log(paths);
+  console.log(currentPath);
 
   if(!paths.includes(currentPath)){
     console.log("blocheeez");
@@ -365,7 +365,7 @@ function runQueries() {
     select * from produse
     `, (err, rows) => {
         // misto ca nu-l actualizeaza decat daca pun asta... wtf man xd
-        tableContent = `<table>`;
+        tableContent = `<table id="lista_cumparaturi">`;
 
         if (rows !== undefined)
         rows.forEach(row => {
@@ -453,7 +453,7 @@ function executeFor(){
 
     var promises = [];
     var counter = 0;
-    tableAddedProducts = `<table>`;
+    tableAddedProducts = `<table id="lista_cumparaturi">`;
     // trebuie parcursa toata lista...
     for(const id of lista_produse_cumparate){
       promises.push(selectRows(parseInt(id), ++counter));

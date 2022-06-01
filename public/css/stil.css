@@ -1,0 +1,472 @@
+html, head, body {
+    /* important to add margin for body too... */
+    margin: 0px; 
+    background-color: #ACE4A3;
+    font-family: monospace
+}
+
+/*pentru a face frumos cu footer-ul sa fie jos*/
+body {
+    margin: 0;
+    margin-bottom: 50px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    background-color: #FFCCCC;
+}
+
+.content {
+    background-color: #ACE4A3;
+}
+
+.footer {
+    background-color: #0f8050;
+    margin-top: auto;
+
+    position: fixed;
+    height: 50px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-bottom: 0px;
+}
+/*pentru a face frumos cu footer-ul sa fie jos*/
+
+header {
+    background-color: #0f8050;
+    padding: 1px;
+    font-size: 30px;
+}
+
+header > h1 {
+    text-align: left;
+    text-indent: 25px;
+    color: #FFDDE2;
+    text-shadow: 3px 2px 3px #FF0000;
+}
+
+.login_register {
+    float: right;
+    justify-content: end;
+    padding-right: 20px;
+    margin-left: 0px; 
+    margin-right: 0px;
+}
+
+.login_register td > div > button {
+    background-color: #af4c4c; /* Green */
+    border: 1px solid black;
+    color: #FFDDE2;
+    padding: 9px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    width: 170px;
+}
+
+body > main {
+    text-indent: 25px;
+}
+
+nav {
+    background-color: #065535;
+    font-size: 30px;
+
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+
+    border-top: 1px solid #008C76;
+    border-bottom: 1px solid #FAA094;
+}
+
+nav > a {
+    text-decoration: none;
+    /* border: 1px dotted #FF1133; */
+    color: #CCFFCC; /*33F->3333FFse dubleaza*/
+    margin-left: 50px; /*distanta dintre texte*/
+}
+
+nav > a:hover {
+    text-decoration: underline;
+}
+
+nav > a:visited {
+    color: purple;
+}
+
+h1 {
+    color:green;
+    text-align: center;
+    font-size: 40px;
+}
+
+main {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+main > h2, h2 {
+    color: #008C76;
+    text-align: center;
+    font-size: 35px;
+}
+
+main > h3 > a, aside > a  {
+    text-decoration: none;
+    color: #008C76; /*33F->3333FFse dubleaza*/
+    font-size: 25px;
+}
+
+/* pseudo-element */
+main > h3 > a:hover {
+    text-decoration: underline;
+}
+
+p {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+
+    text-indent: 0px; /* ca sa nu mai inceapa alte paragrafe*/
+
+    background-position: right bottom, left top;
+    background-repeat: no-repeat, repeat;
+}
+
+/* pseudo-element */
+p::first-letter {
+    font-weight: bold;
+}
+
+/*labels*/
+label {
+    font-size: 20px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+label[id="login_user"]{
+    width: 300px;
+    height: 30px;
+}
+label[id="login_password"]{
+    width: 300px;
+    height: 30px;
+}
+
+/*inputs*/
+input[type=text] {
+    width: 200px;
+    height: 30px;
+}
+input[type=password] {
+    width: 200px;
+    height: 30px;
+}
+input[type=email] {
+    width: 200px;
+    height: 30px;
+}
+input[type=tel] {
+    width: 200px;
+    height: 30px;
+}
+input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+}
+select[name=sex]{
+    width: 200px;
+    height: 30px;
+}
+input[type=time]{
+    width: 200px;
+    height: 30px;
+}
+input[type=list]{
+    width: 200px;
+    height: 30px;
+}
+input[type=date]{
+    width: 200px;
+    height: 30px;
+}
+input[type=range]{
+    width: 200px;
+    height: 30px;
+}
+input[type=color]{
+    width: 200px;
+    height: 30px;
+}
+input[type=number]{
+    width: 200px;
+    height: 30px;
+}
+select[id=draw_tool]{
+    width: 200px;
+    height: 30px;
+    text-align: center;
+}
+input[type=url]{
+    width: 400px;
+    height: 30px;
+}
+textarea[id=Descriere]{
+    width: 400px;
+    height: 80px;
+}
+
+input[type=submit]{
+    padding: 5px 15px;
+    color: #0f8050;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+
+    width: 200px;
+    height: 50px;
+}
+input:disabled[type=submit], #LOGIN_BUTTON:disabled[type=submit], #ADD_BUTTON:disabled, #CLEAR_BUTTON:disabled{
+    background-color: #CCFFCC; /* Green */
+    color: #0f8050;
+}
+input:enabled[type=submit], #LOGIN_BUTTON:enabled[type=submit], #ADD_BUTTON:enabled, #CLEAR_BUTTON:enabled{
+    background-color: #0f8050; /* Green */
+    color: #CCFFCC;
+}
+input:enabled[type=submit]:hover{
+    cursor: pointer;
+}
+
+#LOGIN_BUTTON:disabled[type=submit]:hover, #ADD_BUTTON:disabled:hover, #CLEAR_BUTTON:disabled:hover{
+    cursor: auto;
+}
+#LOGIN_BUTTON:enabled[type=submit]:hover, #ADD_BUTTON:enabled:hover, #CLEAR_BUTTON:enabled:hover{
+    cursor: pointer;
+}
+
+
+.headingfour_register{
+    text-align: center;
+    color: #0f8050;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.general_table, .personal_table{
+    border: 1px solid black;
+}
+
+/*button*/
+button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+/*hover property*/
+a, button {
+    cursor: pointer;
+}
+
+fieldset {
+    width: 300px;
+}
+
+/* FOR LOGIN & REGISTER ONLY =============================================*/
+/* Centering cool divs for login & register
+... Dar arata bine macar */
+#outer_login, #outer_register {
+    /* border: 1px solid red; */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 300px;
+}
+.container_login{
+    width: 400px;
+    height: 275px;
+    border: 1px solid black;
+}
+.container_register{
+    width: 600px;
+    height: 550px;
+    border: 1px solid black;
+}
+.container_shopping{
+    width: 1000px;
+    height: 100px;
+    border: 1px solid black;
+}
+
+/* TABLE pentru login - centreaza automat*/
+.login_table, .register_table, .shopping_table, #lista_cumparaturi {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#login_user{
+    text-align: center;
+}
+
+/* for login container details */
+.container_login > legend, .container_register > legend{
+    text-align: center;
+    color: #0f8050;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+#LOGIN_BUTTON, #ADD_BUTTON, #CLEAR_BUTTON{
+    width: 200px;
+    height: 30px;
+}
+
+.login_register td > div > button{
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+p, footer, ul, #comment_section, #ZonaComentariu{
+    font-family: cursive
+}
+ul{
+    font-size: 20px;
+}
+
+.container{
+    min-width: 1100px;
+}
+
+/* am pus fara footer, pentru ca nu mai aparea at the bottom */
+.container_without_footer{
+    display: table;
+    width: 100%;
+}
+
+/* The #outer - CENTRAM IMAGINEA */
+section{
+    /* border: 1px solid red; */
+    width: 100%;
+}
+img {
+    height: 250px;
+    width: 250px;
+    display: table;
+    margin: 0 auto;
+    /* border: 1px solid black; */
+}
+.user_categories_container, .programs_container{
+    display: table;
+    margin: 0 auto;
+}
+.user_categories_table, .programs_table, #lista_cumparaturi{
+    border-collapse: collapse;
+    background-color: #CCFFCC;
+    color: #0f8050;
+    font-family: monospace;
+}
+.user_categories_table td, .programs_table td, #lista_cumparaturi td{
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid;
+    width: 200px;
+    height: 50px;
+
+    width: 200px;
+    height: 30px;
+}
+.bold_column, .bold_row{
+    background-color: #0f8050;
+    color: #CCFFCC;
+    font-weight: bold;
+}
+
+/* inner outer divs... centering ========================================  */
+#inner {
+    display: table;
+    margin: 0 auto;
+    /* border: 1px solid black; */
+  }
+  
+#outer {
+    /* border: 1px solid red; */
+    width: 100%
+}
+
+/* Videoclipuri.... ================================ */
+/* centrare cu flex */
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.videos_table{
+    padding: 30px;
+    border-spacing: 15px; /* asta face spacing intre cells!!!*/
+    background-color: #065535;
+}
+
+.videos_table td{
+    padding: 5px;
+    background-color: #CCFFCC;
+}
+
+/* comentariu section ============================ */
+#ZonaComentariu{
+    font-size: 20px;
+    width: 400px;
+}
+
+
+/* pentru collapsables */
+.collapsible:hover, #expand_collapse:hover{
+    cursor: pointer;
+}
+.collapsible, #expand_collapse{
+    text-align: left;
+}
+
+/* pentru CANVAS */
+#coolCanvas{
+    border: 30px solid #065535;
+}
+
+/* pentru tabel */
+#add_row, #add_column{
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+
+    width: 150px;
+    height: 60px;
+}
+
+.code_section{
+    font-size: 15px;
+    border: 1px dashed gray;
+    background:#F8F8FF;
+
+    margin: 20px;
+    padding: 20px;
+    width: 300px;
+}
+
+#login_result{
+    display: table;
+    margin: 0 auto;
+}
